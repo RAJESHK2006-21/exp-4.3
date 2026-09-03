@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Branching and Collaboration</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e293b, #3b82f6);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .branches {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .branch {
+            width: 45%;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .main {
+            background: #dbeafe;
+            border: 2px solid #2563eb;
+        }
+
+        .feature {
+            background: #dcfce7;
+            border: 2px solid #16a34a;
+        }
+
+        .branch h2 {
+            margin-bottom: 15px;
+        }
+
+        .branch p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 12px 18px;
+            margin: 5px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .actions {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .status {
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .output {
+            background: #111827;
+            color: #22c55e;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .output h2 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            font-family: Consolas, monospace;
+        }
+
+        @media (max-width: 650px) {
+            .branches {
+                flex-direction: column;
+            }
+
+            .branch {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Git Branching & Collaboration</h1>
+
+    <p class="description">
+        Simulate Git branch creation, changes, merging, and conflict resolution.
+    </p>
+
+    <!-- Branches -->
+    <div class="branches">
+
+        <div class="branch main">
+            <h2>🌿 Main Branch</h2>
+            <p id="mainContent">Main branch version</p>
+
+            <button onclick="changeMain()">
+                Change Main
+            </button>
+        </div>
+
+        <div class="branch feature">
+            <h2>🚀 Feature1 Branch</h2>
+            <p id="featureContent">Feature branch version</p>
+
+            <button onclick="changeFeature()">
+                Change Feature
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Git Actions -->
+    <div class="actions">
+
+        <button onclick="createBranch()">
+            Create Feature Branch
+        </button>
+
+        <button onclick="mergeBranches()">
+            Merge Feature1 → Main
+        </button>
+
+        <button onclick="resolveConflict()">
+            Resolve Conflict
+        </button>
+
+        <button onclick="resetProgram()">
+            Reset
+        </button>
+
+    </div>
+
+    <!-- Status -->
+    <div class="status">
+        <h2>Status</h2>
+        <p id="status">
+            Repository initialized. Main branch is active.
+        </p>
+    </div>
+
+    <!-- Terminal Output -->
+    <div class="output">
+        <h2>Git Output</h2>
+
+        <pre id="output">$ git init
+
+Initialized empty Git repository</pre>
+    </div>
+
+</div>
+
+<script>
+
+    let featureBranchCreated = false;
+    let mainChanged = false;
+    let featureChanged = false;
+    let conflict = false;
+
+    // Create feature branch
+    function createBranch() {
+
+        featureBranchCreated = true;
+
+        document.getElementById("status").textContent =
+            "Feature1 branch created successfully.";
+
+        document.getElementById("output").textContent =
+`$ git checkout -b feature1
+
+Switched to a new branch 'feature1'`;
+
+    }
+
+
+    // Change main branch
+    function changeMain() {
+
+        mainChanged = true;
+
+        document.getElementById("mainContent").textContent =
+            "Main branch version - Updated";
+
+        document.getElementById("status").textContent =
+            "Main branch has been modified.";
+
+        document.getElementById("output").textContent =
+`$ git checkout main
+$ git add .
+$ git commit -m "Update main branch"
+
+Main branch changes committed.`;
+
+    }
+
+
+    // Change feature branch
+    function changeFeature() {
+
+        if (!featureBranchCreated) {
+
+            document.getElementById("status").textContent =
+                "Please create the Feature1 branch first.";
+
+            return;
+        }
+
+        featureChanged = true;
+
+        document.getElementById("featureContent").textContent =
+            "Feature branch version - Updated";
+
+        document.getElementById("status").textContent =
+            "Feature1 branch has been modified.";
+
+        document.getElementById("output").textContent =
+`$ git checkout feature1
+$ git add .
+$ git commit -m "Add new feature"
+
+Feature branch changes committed.`;
+
+    }
+
+
+    // Merge branches
+    function mergeBranches() {
+
+        if (!featureBranchCreated) {
+
+            document.getElementById("status").textContent =
+                "Feature1 branch does not exist.";
+
+            return;
+        }
+
+
+        // Generate conflict
+        if (mainChanged && featureChanged) {
+
+            conflict = true;
+
+            document.getElementById("status").textContent =
+                "⚠️ Merge conflict detected!";
+
+            document.getElementById("output").textContent =
+`$ git checkout main
+$ git merge feature1
+
+CONFLICT (content): Merge conflict in file
+Automatic merge failed.
+
+Please resolve the conflict manually.`;
+
+            return;
+        }
+
+
+        // Normal merge
+        document.getElementById("status").textContent =
+            "Feature1 branch merged successfully into main.";
+
+        document.getElementById("output").textContent =
+`$ git checkout main
+$ git merge feature1
+
+Merge successful!
+Feature1 → Main`;
+
+    }
+
+
+    // Resolve conflict
+    function resolveConflict() {
+
+        if (!conflict) {
+
+            document.getElementById("status").textContent =
+                "No merge conflict exists.";
+
+            return;
+        }
+
+        document.getElementById("mainContent").textContent =
+            "Main + Feature changes combined";
+
+        document.getElementById("featureContent").textContent =
+            "Feature changes successfully merged";
+
+        document.getElementById("status").textContent =
+            "✅ Merge conflict resolved successfully!";
+
+        document.getElementById("output").textContent =
+`$ git status
+
+CONFLICT resolved.
+
+$ git add .
+$ git commit -m "Resolve merge conflict"
+
+Merge conflict resolved successfully.
+Feature1 has been merged into main.`;
+
+        conflict = false;
+
+    }
+
+
+    // Reset program
+    function resetProgram() {
+
+        featureBranchCreated = false;
+        mainChanged = false;
+        featureChanged = false;
+        conflict = false;
+
+        document.getElementById("mainContent").textContent =
+            "Main branch version";
+
+        document.getElementById("featureContent").textContent =
+            "Feature branch version";
+
+        document.getElementById("status").textContent =
+            "Repository initialized. Main branch is active.";
+
+        document.getElementById("output").textContent =
+`$ git init
+
+Initialized empty Git repository`;
+
+    }
+
+</script>
+
+</body>
+</html>
